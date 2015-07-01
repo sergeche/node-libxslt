@@ -71,11 +71,8 @@ exports.parse = function(source, callback) {
  * @param {stringPath} sourcePath - The path of the file
  * @param {parseFileCallback} callback - The callback that handles the response. Expects err and Stylesheet object.
  */
-exports.parseFile = function(sourcePath, callback) {
-	fs.readFile(sourcePath, 'utf8', function(err, data){
-		if (err) return callback(err);
-		exports.parse(data, callback);
-	});
+exports.parseFile = function(sourcePath, options) {
+	return exports.parse(libxmljs.parseXmlFile(sourcePath, options));
 };
 /**
  * Callback to the parseFile function
