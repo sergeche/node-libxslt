@@ -196,7 +196,7 @@ describe('node-libxslt', function() {
 			var res = stylesheet.apply('<input/>');
 			res.should.match(/<res>\[3,"a",true\]<\/res>/)
 		});
-		it('can be called asynchroneously', function() {
+		it.skip('can be called asynchroneously', function() {
 			stylesheet.apply('<input/>', null, function(err, res) {
 				should.not.exist(err);
 				res.should.match(/<res>\[3,"a",true\]<\/res>/)
