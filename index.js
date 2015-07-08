@@ -168,9 +168,7 @@ Stylesheet.prototype.applyToFile = function(sourcePath, params, callback) {
 		that.apply(data, params, callback);
 	});
 };
-/**
- * Callback to the Stylesheet.applyToFile function
- * @callback Stylesheet~applyToFileCallback
- * @param {error} [err] - Error either from reading the file, parsing the XML document or applying the styleshet
- * @param {string} [result]
- */
+
+Stylesheet.prototype.toString = function(doc) {
+	return binding.resultToString(doc, this.stylesheetObj);
+};

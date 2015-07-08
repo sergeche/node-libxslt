@@ -229,6 +229,24 @@ NAN_METHOD(RegisterEXSLT) {
     NanReturnUndefined();
 }
 
+NAN_METHOD(ResultToString) {
+    NanScope();
+    libxmljs::XmlDocument* doc = node::ObjectWrap::Unwrap<libxmljs::XmlDocument>(args[0]->ToObject());
+    Stylesheet* stylesheet = node::ObjectWrap::Unwrap<Stylesheet>(args[1]->ToObject());
+
+    xmlChar *doc_ptr;
+    int doc_len;
+    xsltSaveResultToString(&doc_ptr, &doc_len, doc->xml_obj, stylesheet->stylesheet_obj);
+
+    if (doc_ptr) {
+        v8::Local<v8::String> str = NanNew<v8::String>((const char*)doc_ptr, doc_len);
+        xmlFree(doc_ptr);
+        NanReturnValue(str);
+    }
+
+    NanReturnNull();
+}
+
 NAN_METHOD(RegisterFunction);
 NAN_METHOD(ShutdownOnExit);
 
@@ -241,6 +259,7 @@ void InitAll(Handle<Object> exports) {
     exports->Set(NanNew<String>("applyAsync"), NanNew<FunctionTemplate>(ApplyAsync)->GetFunction());
     exports->Set(NanNew<String>("registerEXSLT"), NanNew<FunctionTemplate>(RegisterEXSLT)->GetFunction());
     exports->Set(NanNew<String>("registerFunction"), NanNew<FunctionTemplate>(RegisterFunction)->GetFunction());
+    exports->Set(NanNew<String>("resultToString"), NanNew<FunctionTemplate>(ResultToString)->GetFunction());
     exports->Set(NanNew<String>("shutdownOnExit"), NanNew<FunctionTemplate>(ShutdownOnExit)->GetFunction());
 }
 NODE_MODULE(node_libxslt, InitAll);
