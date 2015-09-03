@@ -8,7 +8,7 @@
         "src/extensions.cc"
       ],
       "cflags" : [ "-O0 -g" ],
-      "include_dirs": ["<!(node -e \"require('nan')\")"],
+      "include_dirs": ["<!(node -e \"require('nan')\")", "deps/libxslt"],
       'dependencies': [
       	'./deps/libxslt.gyp:libxslt',
       	'./deps/libxslt.gyp:libexslt'
