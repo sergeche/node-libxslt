@@ -107,12 +107,6 @@ Stylesheet.prototype.apply = function(source, params, callback) {
 		callback = params;
 		params = {};
 	}
-	params = params || {};
-
-	for(var p in params) {
-		// string parameters must be surrounded by quotes to be usable by the stylesheet
-		if (typeof params[p] === 'string') params[p] = '\'' + params[p] + '\'';
-	}
 
 	// xml can be given as a string or a pre-parsed xml document
 	var outputString = false;
@@ -127,11 +121,11 @@ Stylesheet.prototype.apply = function(source, params, callback) {
 	}
 
 	// flatten the params object in an array
-	var paramsArray = [];
-	for(var key in params) {
-		paramsArray.push(key);
-		paramsArray.push(params[key]);
-	}
+	var paramsArray = Object.keys(params || {}).reduce(function(result, p) {
+		result.push(p);
+		result.push(typeof params[p] === 'string' ? '\'' + params[p] + '\'' : params[p]);
+		return result;
+	}, []);
 
 	// for some obscure reason I didn't manage to create a new libxmljs document in applySync,
 	// but passing a document by reference and modifying its content works fine
