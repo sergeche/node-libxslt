@@ -71,11 +71,18 @@ exports.parse = function(source, callback) {
  * @param {stringPath} sourcePath - The path of the file
  * @param {parseFileCallback} callback - The callback that handles the response. Expects err and Stylesheet object.
  */
-exports.parseFile = function(sourcePath, callback) {
-	fs.readFile(sourcePath, 'utf8', function(err, data){
-		if (err) return callback(err);
-		exports.parse(data, callback);
-	});
+exports.parseFile = function(sourcePath, options, callback) {
+	if (typeof options === 'function') {
+		callback = options;
+		options = {};
+	}
+
+	try {
+		var stylesheet = exports.parse(binding.readXmlFile(sourcePath, options));
+		callback(null, stylesheet);
+	} catch (err) {
+		return callback(err);
+	}
 };
 /**
  * Callback to the parseFile function
@@ -109,10 +116,13 @@ Stylesheet.prototype.apply = function(source, params, options, callback) {
 	params = params || {};
 	options = options || {};
 
-	for(var p in params) {
+	params = Object.keys(params).reduce(function(result, p) {
 		// string parameters must be surrounded by quotes to be usable by the stylesheet
-		if (typeof params[p] === 'string') params[p] = '\'' + params[p] + '\'';
-	}
+		result[p] = typeof params[p] === 'string' 
+			? '\'' + params[p] + '\'' 
+			: params[p];
+		return result;
+	}, {});
 
 	// xml can be given as a string or a pre-parsed xml document
 	var outputString = options.outputString;

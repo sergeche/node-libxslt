@@ -240,6 +240,74 @@ NAN_METHOD(RegisterEXSLT) {
     return;
 }
 
+/////// 4game
+int getXmlParserOption2(Local<Object> props, const char *key, int value) {
+  Local<String> key2 = Nan::New<String>(key).ToLocalChecked();
+  Local<Boolean> val = props->Get(key2)->ToBoolean();
+  return val->BooleanValue() ? value : 0;
+}
+
+xmlParserOption getXmlParserOption(Local<Object> props) {
+  int ret = 0;
+
+  // http://xmlsoft.org/html/libxml-parser.html#xmlParserOption
+  ret |= getXmlParserOption2(props, "recover", XML_PARSE_RECOVER); // recover on errors
+  ret |= getXmlParserOption2(props, "noent", XML_PARSE_NOENT); // substitute entities
+  ret |= getXmlParserOption2(props, "dtdload", XML_PARSE_DTDLOAD); // load the external subset
+  ret |= getXmlParserOption2(props, "dtdattr", XML_PARSE_DTDATTR); // default DTD attributes
+  ret |= getXmlParserOption2(props, "dtdvalid", XML_PARSE_DTDVALID); // validate with the DTD
+  ret |= getXmlParserOption2(props, "noerror", XML_PARSE_NOERROR); // suppress error reports
+  ret |= getXmlParserOption2(props, "nowarning", XML_PARSE_NOWARNING); // suppress warning reports
+  ret |= getXmlParserOption2(props, "pedantic", XML_PARSE_PEDANTIC); // pedantic error reporting
+  ret |= getXmlParserOption2(props, "noblanks", XML_PARSE_NOBLANKS); // remove blank nodes
+  ret |= getXmlParserOption2(props, "sax1", XML_PARSE_SAX1); // use the SAX1 interface internally
+  ret |= getXmlParserOption2(props, "xinclude", XML_PARSE_XINCLUDE); // Implement XInclude substitition
+  ret |= getXmlParserOption2(props, "nonet", XML_PARSE_NONET); // Forbid network access
+  ret |= getXmlParserOption2(props, "nodict", XML_PARSE_NODICT); // Do not reuse the context dictionnary
+  ret |= getXmlParserOption2(props, "nsclean", XML_PARSE_NSCLEAN); // remove redundant namespaces declarations
+  ret |= getXmlParserOption2(props, "nocdata", XML_PARSE_NOCDATA); // merge CDATA as text nodes
+  ret |= getXmlParserOption2(props, "noxincnode", XML_PARSE_NOXINCNODE); // do not generate XINCLUDE START/END nodes
+  ret |= getXmlParserOption2(props, "compact", XML_PARSE_COMPACT); // compact small text nodes; no modification of the tree allowed afterwards (will possibly crash if you try to modify the tree)
+  ret |= getXmlParserOption2(props, "old10", XML_PARSE_OLD10); // parse using XML-1.0 before update 5
+  ret |= getXmlParserOption2(props, "nobasefix", XML_PARSE_NOBASEFIX); // do not fixup XINCLUDE xml:base uris
+  ret |= getXmlParserOption2(props, "huge", XML_PARSE_HUGE); // relax any hardcoded limit from the parser
+  ret |= getXmlParserOption2(props, "oldsax", XML_PARSE_OLDSAX); // parse using SAX2 interface before 2.7.0
+  ret |= getXmlParserOption2(props, "ignore_enc", XML_PARSE_IGNORE_ENC); // ignore internal document encoding hint
+  ret |= getXmlParserOption2(props, "big_lines", XML_PARSE_BIG_LINES); // Store big lines numbers in text PSVI field
+
+  return (xmlParserOption)ret;
+}
+
+NAN_METHOD(ReadXmlFile) {
+  Nan::HandleScope scope;
+  libxmljs::XmlSyntaxErrorsSync errors; // RAII sentinel
+  
+  xmlParserOption opts = getXmlParserOption(info[1]->ToObject());
+  String::Utf8Value filename(info[0]->ToString());
+  xmlDocPtr doc = xmlReadFile(*filename, NULL, opts);
+
+  if (!doc) {
+    xmlError* error = xmlGetLastError();
+    if (error) {
+      return Nan::ThrowError(libxmljs::XmlSyntaxErrorsSync::BuildSyntaxError(error));
+    }
+    return Nan::ThrowError("Could not parse XML file");
+  }
+
+  Local<Object> doc_handle = libxmljs::XmlDocument::New(doc);
+  Nan::Set(doc_handle, Nan::New<String>("errors").ToLocalChecked(), errors.ToArray());
+
+  xmlNode* root_node = xmlDocGetRootElement(doc);
+  if (root_node == NULL) {
+    return Nan::ThrowError("parsed document has no root element");
+  }
+
+  // create the xml document handle to return
+  return info.GetReturnValue().Set(doc_handle);
+}
+
+/////// end 4game
+
 // Compose the module by assigning the methods previously prepared
 void InitAll(Handle<Object> exports) {
   	Stylesheet::Init(exports);
@@ -248,5 +316,6 @@ void InitAll(Handle<Object> exports) {
   	exports->Set(Nan::New<String>("applySync").ToLocalChecked(), Nan::New<FunctionTemplate>(ApplySync)->GetFunction());
     exports->Set(Nan::New<String>("applyAsync").ToLocalChecked(), Nan::New<FunctionTemplate>(ApplyAsync)->GetFunction());
     exports->Set(Nan::New<String>("registerEXSLT").ToLocalChecked(), Nan::New<FunctionTemplate>(RegisterEXSLT)->GetFunction());
+    exports->Set(Nan::New<String>("readXmlFile").ToLocalChecked(), Nan::New<FunctionTemplate>(ReadXmlFile)->GetFunction());
 }
 NODE_MODULE(node_libxslt, InitAll);

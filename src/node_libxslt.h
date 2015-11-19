@@ -6,3 +6,4 @@ NAN_METHOD(StylesheetASync);
 NAN_METHOD(ApplySync);
 NAN_METHOD(ApplyAsync);
 NAN_METHOD(RegisterEXSLT);
+NAN_METHOD(ReadXmlFile);
