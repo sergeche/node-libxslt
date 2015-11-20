@@ -1,21 +1,27 @@
 sudo: required
 dist: trusty
 language: node_js
-node_js:
-  - "4.2"
 
 branches:
   only:
     - 4game-dist
 
-# env:
-#   matrix:
-#     - USE_LATEST_NODE_GYP=true
-#     - USE_LATEST_NODE_GYP=false
+env:
+  matrix:
+    - NODE_VERSION=0.12
+    - NODE_VERSION=2
+    - NODE_VERSION=3
+    - NODE_VERSION=4.0
+    - NODE_VERSION=4.1
+    - NODE_VERSION=4.2
+    - NODE_VERSION=5
+    - NODE_VERSION=5.1
 
 before_install:
+  - nvm install $NODE_VERSION
+  - nvm use $NODE_VERSION
   - npm install -g node-gyp
 
-after_success:
-  - 'npm install innovaco/libxslt-distribute'
-  - './node_modules/.bin/libxslt-distribute .'
+# after_success:
+#   - 'npm install innovaco/libxslt-distribute'
+#   - './node_modules/.bin/libxslt-distribute .'
