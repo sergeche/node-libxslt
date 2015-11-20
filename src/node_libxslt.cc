@@ -280,22 +280,22 @@ xmlParserOption getXmlParserOption(Local<Object> props) {
 
 NAN_METHOD(ReadXmlFile) {
   Nan::HandleScope scope;
-  libxmljs::XmlSyntaxErrorsSync errors; // RAII sentinel
+  // libxmljs::XmlSyntaxErrorsSync errors; // RAII sentinel
   
   xmlParserOption opts = getXmlParserOption(info[1]->ToObject());
   String::Utf8Value filename(info[0]->ToString());
   xmlDocPtr doc = xmlReadFile(*filename, NULL, opts);
 
   if (!doc) {
-    xmlError* error = xmlGetLastError();
-    if (error) {
-      return Nan::ThrowError(libxmljs::XmlSyntaxErrorsSync::BuildSyntaxError(error));
-    }
+    // xmlError* error = xmlGetLastError();
+    // if (error) {
+    //   return Nan::ThrowError(libxmljs::XmlSyntaxErrorsSync::BuildSyntaxError(error));
+    // }
     return Nan::ThrowError("Could not parse XML file");
   }
 
   Local<Object> doc_handle = libxmljs::XmlDocument::New(doc);
-  Nan::Set(doc_handle, Nan::New<String>("errors").ToLocalChecked(), errors.ToArray());
+  // Nan::Set(doc_handle, Nan::New<String>("errors").ToLocalChecked(), errors.ToArray());
 
   xmlNode* root_node = xmlDocGetRootElement(doc);
   if (root_node == NULL) {

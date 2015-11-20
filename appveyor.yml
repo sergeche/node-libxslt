@@ -19,7 +19,7 @@ platform:
 
 branches:
   only:
-  - 4game-dist
+  - 4game-win
 
 install:
   - ps: Install-Product node $env:nodejs_version
