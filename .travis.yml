@@ -1,3 +1,5 @@
+sudo: required
+dist: trusty
 language: node_js
 node_js:
   - "4.2"
@@ -17,5 +19,3 @@ before_install:
 after_success:
   - 'npm install innovaco/libxslt-distribute'
   - './node_modules/.bin/libxslt-distribute .'
-
-sudo: false
