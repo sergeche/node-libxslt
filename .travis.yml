@@ -28,6 +28,9 @@ install:
 - nvm install $NODE_VERSION
 - nvm use $NODE_VERSION
 - npm install -g node-gyp
+
+script:
+- npm install
 # after_success:
 # - npm install innovaco/libxslt-distribute
 # - "./node_modules/.bin/libxslt-distribute ."
