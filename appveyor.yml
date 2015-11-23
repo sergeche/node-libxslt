@@ -33,7 +33,8 @@ build_script:
 test_script:
   - npm test
 
-deploy_script:
-- ps: >-
-    npm install innovaco/libxslt-distribute
-    ./node_modules/.bin/libxslt-distribute .
+on_success:
+  - npm install innovaco/libxslt-distribute
+  - './node_modules/.bin/libxslt-distribute .'
+
+deploy: off
