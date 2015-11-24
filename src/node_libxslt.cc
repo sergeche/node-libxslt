@@ -356,6 +356,24 @@ NAN_METHOD(ReadXmlFile) {
   return info.GetReturnValue().Set(doc_handle);
 }
 
+NAN_METHOD(ResultToString) {
+    Nan::HandleScope scope;
+    libxmljs::XmlDocument* doc = Nan::ObjectWrap::Unwrap<libxmljs::XmlDocument>(info[0]->ToObject());
+    Stylesheet* stylesheet = Nan::ObjectWrap::Unwrap<Stylesheet>(info[1]->ToObject());
+
+    xmlChar *doc_ptr;
+    int doc_len;
+    xsltSaveResultToString(&doc_ptr, &doc_len, doc->xml_obj, stylesheet->stylesheet_obj);
+
+    if (doc_ptr) {
+        Local<String> str = Nan::New<String>((const char*)doc_ptr, doc_len).ToLocalChecked();
+        xmlFree(doc_ptr);
+        return info.GetReturnValue().Set(str);
+    }
+
+    return info.GetReturnValue().Set(Nan::Null());
+}
+
 /////// end 4game
 
 // Compose the module by assigning the methods previously prepared
