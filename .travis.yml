@@ -1,9 +1,8 @@
-sudo: required
-dist: trusty
-
 os:
 - linux
 - osx
+sudo: false
+language: cpp
 
 branches:
   only:
@@ -18,13 +17,14 @@ env:
   - NODE_VERSION=4.0
   - NODE_VERSION=4.1
   - NODE_VERSION=4.2
-  # - NODE_VERSION=4.3
   - NODE_VERSION=5.0
   - NODE_VERSION=5.1
   global:
     secure: kRa1irx95HW0UKExElyXU8nFlshwelCYtDEHsQhheI2p3Bil5GoUCclTRIa5Pc8XANufjwNxQ45L9cU/4VkJhYj9REdM2QJa9Qg+lCXGVZKxKO31NJbgUMzNSQ5g5sMlWj+1/zBfl3N4iUwYspH1c4hDqw9hKIn++mthLi2zcOKum6wXkmVdj/9uMQuqWeLY4IuYKBnWpsbY+2OofLZU70IpZrXpVVffs1OGd0RzkDLueDHJUebL3vllvdgarmMLbbpCCTsmcpWjaiY9WFGrX3u0Oprop+xXqEVArpViBDri0chE8PTAD7JErRn+8S2NigmPK8F3H99jswLITOS31ehzThZmYb7IzmFI5dh/77dWB9jR9L28EXdJdfvQVENuhns4W4aMQLGwrYjCzUhW6qM1XMSA9ECWtN2E2R/By7iuMIkjwIidvzM83x7um0gWE922lA5WG2bhYY1ojr2aJmxypcf5puIukB/r9oRFPK/m2UYUHGp8wxlpbeuG2IDCTM1HPdPLR61k167U7oYTsIdCR30I12xX/ERb/uhtdQdtpgzPR2j4m7CYFmZmNmBnkqQytTg1MMswKuS2GW5Gd+iB/BUnLkuH9tiIh7y+lT0of7++bm6/HJkEEMyCcs+iwh7pe1oTvEcbtuPRQz2b3i9onHX4MMwhhzY2qlTumzY=
 
 install:
+- if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
+- $CXX --version
 - rm -rf ~/.nvm
 - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
 - source ~/.nvm/nvm.sh
@@ -39,3 +39,10 @@ script:
 after_success:
 - npm install innovaco/libxslt-distribute
 - "./node_modules/.bin/libxslt-distribute ."
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
