@@ -385,5 +385,6 @@ void InitAll(Handle<Object> exports) {
     exports->Set(Nan::New<String>("applyAsync").ToLocalChecked(), Nan::New<FunctionTemplate>(ApplyAsync)->GetFunction());
     exports->Set(Nan::New<String>("registerEXSLT").ToLocalChecked(), Nan::New<FunctionTemplate>(RegisterEXSLT)->GetFunction());
     exports->Set(Nan::New<String>("readXmlFile").ToLocalChecked(), Nan::New<FunctionTemplate>(ReadXmlFile)->GetFunction());
+    exports->Set(Nan::New<String>("resultToString").ToLocalChecked(), Nan::New<FunctionTemplate>(ResultToString)->GetFunction());
 }
 NODE_MODULE(node_libxslt, InitAll);
