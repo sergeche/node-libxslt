@@ -1,8 +1,8 @@
 os:
 - linux
 - osx
-
 sudo: false
+language: cpp
 
 branches:
   only:
@@ -31,6 +31,4 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - gcc-4.8
-    - g++-4.8
     - g++-4.8
