@@ -7,4 +7,3 @@ NAN_METHOD(ApplySync);
 NAN_METHOD(ApplyAsync);
 NAN_METHOD(RegisterEXSLT);
 NAN_METHOD(ReadXmlFile);
-NAN_METHOD(ResultToString);
