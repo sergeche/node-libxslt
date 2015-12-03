@@ -22,7 +22,7 @@ branches:
   - 4game-dist
 
 install:
-  - ps: Install-Product node $env:nodejs_version
+  - ps: Install-Product node $env:nodejs_version $env:platform
   - node --version
   - npm --version
   - git submodule update --init --recursive
