@@ -2,9 +2,6 @@ environment:
   PUBLISH_TOKEN:
     secure: Huxwr+cln7xiX3UL31rYmRDxkQ/J5jzKmfQVKfqAnqasKjdnJf36Hao7fpWNJwuu
   matrix:
-  - nodejs_version: "0.12"
-  - nodejs_version: "2"
-  - nodejs_version: "3"
   - nodejs_version: "4"
   - nodejs_version: "5"
   - nodejs_version: "6"
@@ -17,7 +14,7 @@ platform:
 
 branches:
   only:
-  - 4game-dist
+  - 4game-dist-win
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
